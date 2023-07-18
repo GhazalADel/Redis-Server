@@ -8,20 +8,19 @@ import (
 )
 
 const (
-	PORT    string = "6390"
-	IP      string = "127.0.0.1"
-	ADDRESS string = IP + ":" + PORT
+	PORT string = "6390"
+	IP   string = "127.0.0.1"
 )
 
 func main() {
-	listener, err := net.Listen("tcp", ADDRESS)
+	listener, err := net.Listen("tcp", getAddress())
 	if err != nil {
 		fmt.Printf("Failed to bind to port %s", PORT)
 		os.Exit(1)
 	}
 	defer listener.Close()
 
-	fmt.Println("Server started. Listening on", ADDRESS)
+	fmt.Println("Server started. Listening on", getAddress())
 
 	for {
 		conn, err := listener.Accept()
@@ -29,7 +28,6 @@ func main() {
 			fmt.Println("Error accepting connection: ", err.Error())
 			continue
 		}
-
 		go handleConnection(conn)
 	}
 }
@@ -49,7 +47,6 @@ func handleConnection(conn net.Conn) {
 				os.Exit(1)
 			}
 		}
-		fmt.Printf("Input Command is : %s\n", buf[:n])
 
 		_, err = conn.Write([]byte("+PONG\r\n"))
 		if err != nil {
@@ -57,4 +54,8 @@ func handleConnection(conn net.Conn) {
 			os.Exit(1)
 		}
 	}
+}
+
+func getAddress() string {
+	return IP + ":" + PORT
 }
