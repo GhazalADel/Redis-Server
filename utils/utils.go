@@ -1,12 +1,11 @@
 package utils
 
 import (
-	"fmt"
 	"strings"
 )
 
-func PrintCommand(buf []byte, n int) {
+func GetCommand(buf []byte, n int) string {
 	bufContent := buf[:n]
 	bufContentSplit := strings.Split(string(bufContent), "\n")
-	fmt.Printf("Input Command : %s\n", bufContentSplit[2])
+	return bufContentSplit[2]
 }

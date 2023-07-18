@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"net"
 	"os"
 )
@@ -11,6 +10,10 @@ const (
 	PORT string = "6390"
 	IP   string = "127.0.0.1"
 )
+
+func getAddress() string {
+	return IP + ":" + PORT
+}
 
 func main() {
 	listener, err := net.Listen("tcp", getAddress())
@@ -28,34 +31,6 @@ func main() {
 			fmt.Println("Error accepting connection: ", err.Error())
 			continue
 		}
-		go handleConnection(conn)
+		go HandleConnection(conn)
 	}
-}
-
-func handleConnection(conn net.Conn) {
-	defer conn.Close()
-
-	buf := make([]byte, 1024)
-	for {
-		n, err := conn.Read(buf)
-		if err != nil {
-			//no more data sent
-			if err == io.EOF {
-				break
-			} else {
-				fmt.Println("Error reading command: ", err.Error())
-				os.Exit(1)
-			}
-		}
-
-		_, err = conn.Write([]byte("+PONG\r\n"))
-		if err != nil {
-			fmt.Println("Error writing command: ", err.Error())
-			os.Exit(1)
-		}
-	}
-}
-
-func getAddress() string {
-	return IP + ":" + PORT
 }
