@@ -14,3 +14,5 @@ To run a new client in another tab enter
 ```bash
  redis-cli -h 127.0.0.1 -p 6390
 ```
+
+Don't forget to remove .idea folder
