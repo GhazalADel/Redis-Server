@@ -17,7 +17,7 @@ To run a new client in another tab enter
  redis-cli -h 127.0.0.1 -p 6390
 ```
 
-Don't forget to remove .idea folder
+!!!!!!!!!!!!!!Don't forget to remove .idea folder!!!!!!!!!!!!!!!!!!!!!!!
 
 ### Usage
 
@@ -26,4 +26,8 @@ SET Command
  SET hi "bye"
  SET apple fruit
  SET three 3
+```
+GET command
+```bash
+ GET hi
 ```

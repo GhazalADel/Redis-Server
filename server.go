@@ -32,8 +32,8 @@ type LoCache interface {
 	StopCleanup()
 	PING() string
 	SET(inp string) string
-	//GET()
-	//SETNX()
+	GET(inp string) string
+	SETNX(inp string) string
 	//MSET()
 	//MGET()
 	//DEL()
@@ -118,6 +118,42 @@ func (lc *LocalCache) SET(inp string) string {
 	}
 	return res
 }
+
+func (lc *LocalCache) GET(inp string) string {
+	inpSplitted := strings.Split(inp, " ")
+	key := inpSplitted[1]
+	if pop, ok := lc.Pairs[key]; ok {
+		return pop.value.(string)
+	}
+	return "Not Found"
+}
+
+func (lc *LocalCache) SETNX(inp string) string {
+	res := "Key Added"
+	inpSplitted := strings.Split(inp, " ")
+	key := inpSplitted[1]
+	var val interface{}
+	v, err := strconv.Atoi(inpSplitted[2])
+	if err == nil {
+		val = v
+	} else {
+		tmp := inpSplitted[2]
+		if tmp[0] == 34 && tmp[len(tmp)-1] == 34 {
+			val = tmp[1 : len(tmp)-1]
+		} else if tmp[0] == 34 || tmp[len(tmp)-1] == 34 {
+			return "Invalid Value"
+		} else {
+			val = tmp
+		}
+	}
+	if _, ok := lc.Pairs[key]; !ok {
+		lc.Pairs[key] = CachedPair{value: val, ExpirationTime: 0}
+	} else {
+		res = "Existing Key"
+	}
+	return res
+}
+
 func main() {
 	listener, err := net.Listen("tcp", getAddress())
 	if err != nil {
