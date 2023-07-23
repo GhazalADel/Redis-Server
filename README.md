@@ -1,5 +1,7 @@
 # Redis-Server
-It is a simple Implementation of Redis Server in Golang.
+It is a simple Implementation of Redis Server in Golang which capable
+of handle multiple clients at the same time and handle basic
+reids commands.
 
 ## Run 
 Clone Project using following command
@@ -16,3 +18,12 @@ To run a new client in another tab enter
 ```
 
 Don't forget to remove .idea folder
+
+### Usage
+
+SET Command
+```bash
+ SET hi "bye"
+ SET apple fruit
+ SET three 3
+```

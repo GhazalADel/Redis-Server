@@ -6,9 +6,10 @@ import (
 	"net"
 	"os"
 	"redis/utils"
+	"strings"
 )
 
-func HandleConnection(conn net.Conn) {
+func HandleConnection(conn net.Conn, lc *LocalCache) {
 	defer conn.Close()
 
 	buf := make([]byte, 1024)
@@ -19,15 +20,26 @@ func HandleConnection(conn net.Conn) {
 			if err == io.EOF {
 				break
 			} else {
-				fmt.Println("Error reading command: ", err.Error())
-				os.Exit(1)
+				//fmt.Println("Error reading command: ", err.Error())
+				//os.Exit(1)
+				return
 			}
 		}
 
 		command := utils.GetCommand(buf, n)
 		fmt.Println(command)
 
-		_, err = conn.Write([]byte("+PONG\r\n"))
+		res := "Invalid Command"
+
+		//normalize
+		command = strings.TrimSpace(strings.ToLower(command))
+		if command == "ping" {
+			res = lc.PING()
+		} else if strings.HasPrefix(command, "set ") {
+			res = lc.SET(command)
+		}
+
+		_, err = conn.Write([]byte("+" + res + "\r\n"))
 		if err != nil {
 			fmt.Println("Error writing command: ", err.Error())
 			os.Exit(1)
